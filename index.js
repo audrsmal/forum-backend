@@ -2,6 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import questionRouter from "./src/router/question.js";
+import answerRouter from "./src/router/answer.js";
 
 import userRouter from "./src/router/user.js";
 
@@ -13,6 +15,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/users", userRouter);
+app.use("/api", questionRouter);
+app.use("/api", answerRouter);
 
 app.get("/health", (req, res) => res.json({ ok: true }));
 
