@@ -86,3 +86,17 @@ export const login = async (req, res) => {
       .json({ message: "Login failed", error: err.message });
   }
 };
+export const me = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+
+    const user = await User.findOne({ id: userId }).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    return res.json({ user });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch user", error: err.message });
+  }
+};

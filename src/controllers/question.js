@@ -57,7 +57,7 @@ export const deleteQuestion = async (req, res) => {
     }
 
     await Question.deleteOne({ id });
-    // optional: also delete answers for that question
+
     await Answer.deleteMany({ questionId: id });
 
     return res.json({ message: "Question deleted successfully" });

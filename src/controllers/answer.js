@@ -47,7 +47,7 @@ export const createAnswerForQuestion = async (req, res) => {
 
 export const deleteAnswer = async (req, res) => {
   try {
-    const { id } = req.params; // answer id
+    const { id } = req.params;
     const { userId } = req.body || {};
 
     if (!userId) return res.status(401).json({ message: "Bad auth" });
