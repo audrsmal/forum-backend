@@ -5,6 +5,7 @@ const schema = mongoose.Schema({
   userId: { type: String, required: true },
   title: { type: String, required: true },
   body: { type: String, required: true },
+  topic: { type: String, required: true },
   createdAt: { type: Date, required: true, default: Date.now },
 });
 

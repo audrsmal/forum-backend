@@ -2,6 +2,7 @@ import { Router } from "express";
 import authUser from "../middleware/auth.js";
 import {
   getQuestions,
+  getQuestionById,
   createQuestion,
   deleteQuestion,
 } from "../controllers/question.js";
@@ -13,6 +14,8 @@ import {
 const router = Router();
 
 router.get("/questions", getQuestions);
+router.get("/question/:id", getQuestionById);
+
 router.post("/question", authUser, createQuestion);
 router.delete("/question/:id", authUser, deleteQuestion);
 
