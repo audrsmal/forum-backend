@@ -9,6 +9,10 @@ const signToken = (userId) => {
   });
 };
 
+const nameRegex = /^[A-Za-z0-9 _-]{2,30}$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
 export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body || {};
@@ -19,7 +23,28 @@ export const register = async (req, res) => {
         .json({ message: "name, email, password required" });
     }
 
+    const nameTrim = String(name).trim();
     const emailLower = String(email).toLowerCase().trim();
+
+    if (!nameRegex.test(nameTrim)) {
+      return res.status(400).json({
+        message:
+          "Name must be 2-30 characters and can contain letters, numbers, spaces, _ and -",
+      });
+    }
+
+    if (!emailRegex.test(emailLower)) {
+      return res.status(400).json({
+        message: "Invalid email format",
+      });
+    }
+
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must be at least 8 characters and include uppercase, lowercase and a number",
+      });
+    }
 
     const exists = await User.findOne({ email: emailLower });
     if (exists) {
@@ -30,7 +55,7 @@ export const register = async (req, res) => {
 
     const user = await User.create({
       id: uuidv4(),
-      name: String(name).trim(),
+      name: nameTrim,
       email: emailLower,
       password: hashed,
     });
@@ -63,12 +88,20 @@ export const login = async (req, res) => {
 
     const emailLower = String(email).toLowerCase().trim();
 
+    if (!emailRegex.test(emailLower)) {
+      return res.status(400).json({
+        message: "Invalid email format",
+      });
+    }
+
     const user = await User.findOne({ email: emailLower });
+
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const ok = await bcrypt.compare(password, user.password);
+
     if (!ok) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -86,12 +119,16 @@ export const login = async (req, res) => {
       .json({ message: "Login failed", error: err.message });
   }
 };
+
 export const me = async (req, res) => {
   try {
     const userId = req.body.userId;
 
     const user = await User.findOne({ id: userId }).select("-password");
-    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     return res.json({ user });
   } catch (err) {
