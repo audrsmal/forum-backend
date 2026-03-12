@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import questionRouter from "./src/router/question.js";
 import answerRouter from "./src/router/answer.js";
+import topicRouter from "./src/router/topic.js";
 
 import userRouter from "./src/router/user.js";
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use("/api/users", userRouter);
 app.use("/api", questionRouter);
 app.use("/api", answerRouter);
+app.use("/api", topicRouter);
 
 app.get("/health", (req, res) => res.json({ ok: true }));
 
